@@ -599,7 +599,7 @@ input[type="color"] {
 }
 
 .dashboard__body {
-  @apply px-8 py-4;
+  @apply px-8 pt-7 pb-4;
 }
 
 /* Course Page */

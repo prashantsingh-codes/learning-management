@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useGetCoursesQuery } from "@/state/api";
 import { useRouter } from "next/navigation";
@@ -83,5 +83,12 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <Search />
+    </Suspense>
+  );
+}
+
 
