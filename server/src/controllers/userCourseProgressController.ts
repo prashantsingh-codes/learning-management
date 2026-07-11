@@ -27,7 +27,9 @@ export const getUserEnrolledCourses = async (
       .eq(userId)
       .exec() as UserCourseProgressClass[];
     const courseIds = enrolledCourses.map((item) => item.courseId);
-    const courses = await Course.batchGet(courseIds) as CourseClass[];
+    const courses = courseIds.length > 0
+      ? (await Course.batchGet(courseIds) as CourseClass[])
+      : [];
     res.json({
       message: "Enrolled courses retrieved successfully",
       data: courses,
