@@ -136,8 +136,8 @@ const AppSidebar = () => {
                 onClick={() => signOut()}
                 className="app-sidebar__signout"
               >
-                <LogOut className="mr-2 h-6 w-6" />
-                <span>Sign out</span>
+                <LogOut className="mr-2 h-6 w-6 group-data-[collapsible=icon]:mr-0" />
+                <span className="group-data-[collapsible=icon]:hidden">Sign out</span>
               </button>
             </SidebarMenuButton>
           </SidebarMenuItem>

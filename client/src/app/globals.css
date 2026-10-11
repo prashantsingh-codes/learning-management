@@ -20,6 +20,30 @@ body,
   @apply bg-customgreys-primarybg;
 }
 
+/* Custom Dark Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1b1c22;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d2e37;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f404d;
+}
+
+* {
+  scrollbar-color: #2d2e37 #1b1c22;
+  scrollbar-width: thin;
+}
+
 :root {
   --radius: 8px;
 }
@@ -536,15 +560,15 @@ input[type="color"] {
 
 /* Dashboard Layout */
 .dashboard {
-  @apply min-h-screen w-full bg-customgreys-primarybg flex;
+  @apply h-screen w-full bg-customgreys-primarybg flex overflow-hidden;
 }
 
 .dashboard__content {
-  @apply flex flex-1 overflow-hidden;
+  @apply flex flex-1 overflow-hidden min-w-0 h-full;
 }
 
 .dashboard__main {
-  @apply flex-grow min-h-screen transition-all duration-500 ease-in-out overflow-y-auto bg-customgreys-secondarybg;
+  @apply flex-grow h-full transition-all duration-500 ease-in-out overflow-y-auto bg-customgreys-secondarybg min-w-0 flex flex-col;
 }
 
 .dashboard__main--not-course {
@@ -552,7 +576,7 @@ input[type="color"] {
 }
 
 .dashboard__body {
-  @apply px-8 py-4;
+  @apply px-8 py-4 flex-1;
 }
 
 /* Course Page */
@@ -1415,11 +1439,11 @@ input[type="color"] {
 }
 
 .app-sidebar__nav-button {
-  @apply gap-4 p-8 hover:bg-customgreys-secondarybg group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center;
+  @apply gap-4 p-8 hover:bg-customgreys-secondarybg group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:h-12;
 }
 
 .app-sidebar__nav-link {
-  @apply relative flex items-center;
+  @apply relative flex items-center group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-full;
 }
 
 .app-sidebar__nav-text {
@@ -1431,7 +1455,7 @@ input[type="color"] {
 }
 
 .app-sidebar__signout {
-  @apply text-primary-700 pl-8;
+  @apply text-primary-700 pl-8 group-data-[collapsible=icon]:pl-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-full;
 }
 
 /* NonDashboard Layout */
