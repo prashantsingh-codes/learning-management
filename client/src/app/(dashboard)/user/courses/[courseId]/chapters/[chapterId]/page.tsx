@@ -84,10 +84,14 @@ const Course = () => {
                 width="100%"
                 height="100%"
                 onProgress={handleProgress}
+                onError={(e: any) => console.error("Video player error:", e)}
                 config={{
                   file: {
                     attributes: {
                       controlsList: "nodownload",
+                      crossOrigin: "anonymous",
+                      playsInline: true,
+                      preload: "auto",
                     },
                   },
                 }}

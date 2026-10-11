@@ -123,7 +123,20 @@ const PaymentPageContent = () => {
                   <div className="payment__card-element">
                     <PaymentElement
                       id="payment-element"
-                      options={{ layout: "accordion" }}
+                      options={{
+                        layout: "tabs",
+                        fields: {
+                          billingDetails: {
+                            name: "never",
+                            email: "never",
+                            phone: "never",
+                            address: {
+                              country: "auto",
+                              postalCode: "auto",
+                            },
+                          },
+                        },
+                      }}
                     />
                   </div>
                 </div>
