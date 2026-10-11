@@ -4,11 +4,8 @@ import { useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import ReactPlayer from "react-player";
 import Loading from "@/components/Loading";
 import { useCourseProgressData } from "@/hooks/useCourseProgressData";
-
-const Player = ReactPlayer as any;
 
 const Course = () => {
   const {
@@ -24,9 +21,12 @@ const Course = () => {
     setHasMarkedComplete,
   } = useCourseProgressData();
 
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<HTMLVideoElement>(null);
 
-  const handleProgress = ({ played }: { played: number }) => {
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const video = e.currentTarget;
+    if (!video.duration) return;
+    const played = video.currentTime / video.duration;
     if (
       played >= 0.8 &&
       !hasMarkedComplete &&
@@ -77,24 +77,16 @@ const Course = () => {
         <Card className="course__video">
           <CardContent className="course__video-container">
             {currentChapter?.video ? (
-              <Player
+              <video
                 ref={playerRef}
-                url={currentChapter.video as string}
+                key={currentChapter.video as string}
+                src={currentChapter.video as string}
                 controls
-                width="100%"
-                height="100%"
-                onProgress={handleProgress}
-                onError={(e: any) => console.error("Video player error:", e)}
-                config={{
-                  file: {
-                    attributes: {
-                      controlsList: "nodownload",
-                      crossOrigin: "anonymous",
-                      playsInline: true,
-                      preload: "auto",
-                    },
-                  },
-                }}
+                controlsList="nodownload"
+                playsInline
+                preload="metadata"
+                className="w-full h-full rounded-lg object-contain bg-black"
+                onTimeUpdate={handleTimeUpdate}
               />
             ) : (
               <div className="course__no-video">
