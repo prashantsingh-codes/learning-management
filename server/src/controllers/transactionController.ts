@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import { Request, Response } from "express";
+import { getAuth } from "@clerk/express";
 import Course, { CourseClass } from "../models/courseModel";
 import Transaction from "../models/transactionModel";
 import UserCourseProgress from "../models/userCourseProgressModel";
@@ -9,7 +10,7 @@ dotenv.config();
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error(
-    "STRIPE_SECRET_KEY os required but was not found in env variables"
+    "STRIPE_SECRET_KEY is required but was not found in env variables"
   );
 }
 
@@ -73,10 +74,20 @@ export const createTransaction = async (
   res: Response
 ): Promise<void> => {
   const { userId, courseId, transactionId, amount, paymentProvider } = req.body;
+  const auth = getAuth(req);
+
+  if (!auth || auth.userId !== userId) {
+    res.status(403).json({ message: "Access denied" });
+    return;
+  }
 
   try {
     // 1. get course info
-    const course = await Course.get(courseId) as CourseClass;
+    const course = (await Course.get(courseId)) as CourseClass;
+    if (!course) {
+      res.status(404).json({ message: "Course not found" });
+      return;
+    }
 
     // 2. create transaction record
     const newTransaction = new Transaction({
@@ -95,9 +106,9 @@ export const createTransaction = async (
       courseId,
       enrollmentDate: new Date().toISOString(),
       overallProgress: 0,
-      sections: course.sections.map((section: any) => ({
+      sections: (course.sections || []).map((section: any) => ({
         sectionId: section.sectionId,
-        chapters: section.chapters.map((chapter: any) => ({
+        chapters: (section.chapters || []).map((chapter: any) => ({
           chapterId: chapter.chapterId,
           completed: false,
         })),

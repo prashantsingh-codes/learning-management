@@ -102,16 +102,19 @@ export const updateCourse = async (
       return;
     }
 
-    if (updateData.price) {
-      const price = parseInt(updateData.price);
-      if (isNaN(price)) {
+    if (updateData.price !== undefined) {
+      const price =
+        typeof updateData.price === "string"
+          ? parseFloat(updateData.price)
+          : Number(updateData.price);
+      if (isNaN(price) || price < 0) {
         res.status(400).json({
           message: "Invalid price format",
           error: "Price must be a valid number",
         });
         return;
       }
-      updateData.price = price * 100;
+      updateData.price = Math.round(price * 100);
     }
 
     if (updateData.sections) {

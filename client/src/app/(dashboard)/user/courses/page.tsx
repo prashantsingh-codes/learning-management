@@ -57,9 +57,9 @@ const Courses = () => {
   };
 
   if (!isLoaded || isLoading) return <Loading />;
-  if (!user) return <div>Please sign in to view your courses.</div>;
-  if (isError || !courses || courses.length === 0)
-    return <div>You are not enrolled in any courses yet.</div>;
+  if (!user) return <div className="p-6 text-center text-white-50">Please sign in to view your courses.</div>;
+  if (isError || !courses)
+    return <div className="p-6 text-center text-red-400">Error loading enrolled courses.</div>;
 
   return (
     <div className="user-courses">
@@ -68,15 +68,22 @@ const Courses = () => {
         onSearch={setSearchTerm}
         onCategoryChange={setSelectedCategory}
       />
-      <div className="user-courses__grid">
-        {filteredCourses.map((course) => (
-          <CourseCard
-            key={course.courseId}
-            course={course}
-            onGoToCourse={handleGoToCourse}
-          />
-        ))}
-      </div>
+      {filteredCourses.length === 0 ? (
+        <div className="text-center py-12 text-customgreys-dirtyGrey">
+          <p className="text-lg">No enrolled courses found.</p>
+          <p className="text-sm mt-1">Explore our course catalog to start learning!</p>
+        </div>
+      ) : (
+        <div className="user-courses__grid">
+          {filteredCourses.map((course) => (
+            <CourseCard
+              key={course.courseId}
+              course={course}
+              onGoToCourse={handleGoToCourse}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

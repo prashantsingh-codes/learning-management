@@ -8,6 +8,8 @@ import ReactPlayer from "react-player";
 import Loading from "@/components/Loading";
 import { useCourseProgressData } from "@/hooks/useCourseProgressData";
 
+const Player = ReactPlayer as any;
+
 const Course = () => {
   const {
     user,
@@ -21,15 +23,10 @@ const Course = () => {
     hasMarkedComplete,
     setHasMarkedComplete,
   } = useCourseProgressData();
-  console.log("currentChapter.video:", currentChapter);
 
-  const playerRef = useRef<HTMLVideoElement>(null);
+  const playerRef = useRef<any>(null);
 
-  const handleTimeUpdate = (event: React.SyntheticEvent<HTMLVideoElement>) => {
-    const video = event.currentTarget;
-    if (!video.duration) return;
-    const played = video.currentTime / video.duration;
-
+  const handleProgress = ({ played }: { played: number }) => {
     if (
       played >= 0.8 &&
       !hasMarkedComplete &&
@@ -80,14 +77,20 @@ const Course = () => {
         <Card className="course__video">
           <CardContent className="course__video-container">
             {currentChapter?.video ? (
-              <ReactPlayer
+              <Player
                 ref={playerRef}
-                src={currentChapter.video as string}
+                url={currentChapter.video as string}
                 controls
                 width="100%"
                 height="100%"
-                onTimeUpdate={handleTimeUpdate}
-                controlsList="nodownload"
+                onProgress={handleProgress}
+                config={{
+                  file: {
+                    attributes: {
+                      controlsList: "nodownload",
+                    },
+                  },
+                }}
               />
             ) : (
               <div className="course__no-video">

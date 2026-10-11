@@ -46,14 +46,23 @@ export const getUserCourseProgress = async (
   res: Response
 ): Promise<void> => {
   const { userId, courseId } = req.params;
+  const auth = getAuth(req);
 
   if (typeof userId !== "string" || typeof courseId !== "string") {
     res.status(400).json({ message: "Invalid User ID or Course ID" });
     return;
   }
 
+  if (!auth || auth.userId !== userId) {
+    res.status(403).json({ message: "Access denied" });
+    return;
+  }
+
   try {
-    const progress = await UserCourseProgress.get({ userId, courseId }) as UserCourseProgressClass;
+    const progress = (await UserCourseProgress.get({
+      userId,
+      courseId,
+    })) as UserCourseProgressClass;
     if (!progress) {
       res
         .status(404)
@@ -76,6 +85,7 @@ export const updateUserCourseProgress = async (
   res: Response
 ): Promise<void> => {
   const { userId, courseId } = req.params;
+  const auth = getAuth(req);
   const progressData = req.body;
 
   if (typeof userId !== "string" || typeof courseId !== "string") {
@@ -83,8 +93,16 @@ export const updateUserCourseProgress = async (
     return;
   }
 
+  if (!auth || auth.userId !== userId) {
+    res.status(403).json({ message: "Access denied" });
+    return;
+  }
+
   try {
-    let progress: UserCourseProgressClass | undefined = await UserCourseProgress.get({ userId, courseId }) as UserCourseProgressClass | undefined;
+    let progress: UserCourseProgressClass | undefined = (await UserCourseProgress.get({
+      userId,
+      courseId,
+    })) as UserCourseProgressClass | undefined;
 
     if (!progress) {
       // If no progress exists, create initial progress
@@ -109,7 +127,7 @@ export const updateUserCourseProgress = async (
     await progress.save();
 
     res.json({
-      message: "",
+      message: "User course progress updated successfully",
       data: progress,
     });
   } catch (error) {

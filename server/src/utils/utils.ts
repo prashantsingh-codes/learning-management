@@ -98,18 +98,21 @@ export const mergeSections = (
   newSections: any[]
 ): any[] => {
   const existingSectionsMap = new Map<string, any>();
-  for (const existingSection of existingSections) {
+  for (const existingSection of existingSections || []) {
     existingSectionsMap.set(existingSection.sectionId, existingSection);
   }
 
-  for (const newSection of newSections) {
+  for (const newSection of newSections || []) {
     const section = existingSectionsMap.get(newSection.sectionId);
     if (!section) {
       // Add new section
       existingSectionsMap.set(newSection.sectionId, newSection);
     } else {
       // Merge chapters within the existing section
-      section.chapters = mergeChapters(section.chapters, newSection.chapters);
+      section.chapters = mergeChapters(
+        section.chapters || [],
+        newSection.chapters || []
+      );
       existingSectionsMap.set(newSection.sectionId, section);
     }
   }
@@ -122,11 +125,11 @@ export const mergeChapters = (
   newChapters: any[]
 ): any[] => {
   const existingChaptersMap = new Map<string, any>();
-  for (const existingChapter of existingChapters) {
+  for (const existingChapter of existingChapters || []) {
     existingChaptersMap.set(existingChapter.chapterId, existingChapter);
   }
 
-  for (const newChapter of newChapters) {
+  for (const newChapter of newChapters || []) {
     existingChaptersMap.set(newChapter.chapterId, {
       ...(existingChaptersMap.get(newChapter.chapterId) || {}),
       ...newChapter,
@@ -137,14 +140,16 @@ export const mergeChapters = (
 };
 
 export const calculateOverallProgress = (sections: any[]): number => {
-  const totalChapters = sections.reduce(
-    (acc: number, section: any) => acc + section.chapters.length,
+  const totalChapters = (sections || []).reduce(
+    (acc: number, section: any) => acc + (section?.chapters?.length || 0),
     0
   );
 
-  const completedChapters = sections.reduce(
+  const completedChapters = (sections || []).reduce(
     (acc: number, section: any) =>
-      acc + section.chapters.filter((chapter: any) => chapter.completed).length,
+      acc +
+      (section?.chapters?.filter((chapter: any) => chapter.completed)?.length ||
+        0),
     0
   );
 

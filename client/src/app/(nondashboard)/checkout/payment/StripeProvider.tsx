@@ -9,11 +9,8 @@ import { useCreateStripePaymentIntentMutation } from "@/state/api";
 import { useCurrentCourse } from "@/hooks/useCurrentCourse";
 import Loading from "@/components/Loading";
 
-if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
-  throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not set");
-}
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY;
+const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
 
 const appearance: Appearance = {
   theme: "stripe",
@@ -36,13 +33,17 @@ const StripeProvider = ({ children }: { children: React.ReactNode }) => {
   const { course } = useCurrentCourse();
 
   useEffect(() => {
-    if (!course) return;
+    if (!course || (course.price ?? 0) <= 0) return;
     const fetchPaymentIntent = async () => {
-      const result = await createStripePaymentIntent({
-        amount: course?.price ?? 9999999999999,
-      }).unwrap();
+      try {
+        const result = await createStripePaymentIntent({
+          amount: course.price ?? 0,
+        }).unwrap();
 
-      setClientSecret(result.clientSecret);
+        setClientSecret(result.clientSecret);
+      } catch (error) {
+        console.error("Failed to create payment intent:", error);
+      }
     };
 
     fetchPaymentIntent();
@@ -52,6 +53,14 @@ const StripeProvider = ({ children }: { children: React.ReactNode }) => {
     clientSecret,
     appearance,
   };
+
+  if (!stripePromise) {
+    return (
+      <div className="p-6 text-center text-red-400">
+        Stripe configuration is missing. Please check your environment variables.
+      </div>
+    );
+  }
 
   if (!clientSecret) return <Loading />;
 

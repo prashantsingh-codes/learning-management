@@ -6,7 +6,7 @@ export class TransactionClass extends Item {
   transactionId!: string;
   dateTime!: string;
   courseId!: string;
-  paymentProvider!: "stripe";
+  paymentProvider!: "stripe" | "free";
   amount?: number;
 }
 
@@ -36,7 +36,7 @@ const transactionSchema = new Schema(
     },
     paymentProvider: {
       type: String,
-      enum: ["stripe"],
+      enum: ["stripe", "free"],
       required: true,
     },
     amount: Number,

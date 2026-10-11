@@ -3,7 +3,7 @@ import React from "react";
 
 const TeacherSettings = () => {
   return (
-    <div className="w-3/5">
+    <div className="w-full md:w-3/5 max-w-2xl">
       <SharedNotificationSettings
         title="Teacher Settings"
         subtitle="Manage your teacher notification settings"

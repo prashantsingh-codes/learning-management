@@ -58,7 +58,7 @@ const TeacherCourseCard = ({
               <span className="font-bold text-white-100">
                 {course.enrollments.length}
               </span>{" "}
-              Student{course.enrollments.length > 1 ? "s" : ""} Enrolled
+              {course.enrollments.length === 1 ? "Student" : "Students"} Enrolled
             </p>
           )}
         </div>

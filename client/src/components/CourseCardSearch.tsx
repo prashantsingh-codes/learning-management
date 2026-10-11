@@ -40,7 +40,7 @@ const CourseCardSearch = ({
               {formatPrice(course.price)}
             </span>
             <span className="course-card-search__enrollment">
-              {course.enrollments?.length} Enrolled
+              {course.enrollments?.length ?? 0} Enrolled
             </span>
           </div>
         </div>

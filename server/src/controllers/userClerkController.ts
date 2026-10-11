@@ -14,11 +14,16 @@ export const updateUser = async (
   }
 
   try {
+    const publicMetadata: Record<string, any> = {};
+    if (userData.publicMetadata?.userType !== undefined) {
+      publicMetadata.userType = userData.publicMetadata.userType;
+    }
+    if (userData.publicMetadata?.settings !== undefined) {
+      publicMetadata.settings = userData.publicMetadata.settings;
+    }
+
     const user = await clerkClient.users.updateUserMetadata(userId, {
-      publicMetadata: {
-        userType: userData.publicMetadata.userType,
-        settings: userData.publicMetadata.settings,
-      },
+      publicMetadata,
     });
 
     res.json({ message: "User updated successfully", data: user });

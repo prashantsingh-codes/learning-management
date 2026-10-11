@@ -87,17 +87,24 @@ const Courses = () => {
         onSearch={setSearchTerm}
         onCategoryChange={setSelectedCategory}
       />
-      <div className="teacher-courses__grid">
-        {filteredCourses.map((course) => (
-          <TeacherCourseCard
-            key={course.courseId}
-            course={course}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            isOwner={course.teacherId === user?.id}
-          />
-        ))}
-      </div>
+      {filteredCourses.length === 0 ? (
+        <div className="text-center py-12 text-customgreys-dirtyGrey">
+          <p className="text-lg">No courses found.</p>
+          <p className="text-sm mt-1">Create your first course using the button above.</p>
+        </div>
+      ) : (
+        <div className="teacher-courses__grid">
+          {filteredCourses.map((course) => (
+            <TeacherCourseCard
+              key={course.courseId}
+              course={course}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              isOwner={course.teacherId === user?.id}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

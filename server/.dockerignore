@@ -7,3 +7,5 @@ README.md
 .gitignore
 *.md
 dist/
+.env
+.env.*

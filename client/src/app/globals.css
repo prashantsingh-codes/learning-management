@@ -557,7 +557,7 @@ input[type="color"] {
 
 /* Course Page */
 .course {
-  @apply flex h-[100vh];
+  @apply flex min-h-[calc(100vh-6rem)] w-full;
 }
 
 .course__container {

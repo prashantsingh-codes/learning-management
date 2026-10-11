@@ -21,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import DroppableComponent from "./Droppable";
 import ChapterModal from "./ChapterModal";
 import SectionModal from "./SectionModal";
@@ -46,6 +46,11 @@ const CourseEditor = () => {
       coursePrice: "0",
       courseStatus: false,
     },
+  });
+
+  const courseStatus = useWatch({
+    control: methods.control,
+    name: "courseStatus",
   });
 
   useEffect(() => {
@@ -103,11 +108,11 @@ const CourseEditor = () => {
               <div className="flex items-center space-x-4">
                 <CustomFormField
                   name="courseStatus"
-                  label={methods.watch("courseStatus") ? "Published" : "Draft"}
+                  label={courseStatus ? "Published" : "Draft"}
                   type="switch"
                   className="flex items-center space-x-2"
                   labelClassName={`text-sm font-medium ${
-                    methods.watch("courseStatus")
+                    courseStatus
                       ? "text-green-500"
                       : "text-yellow-500"
                   }`}
@@ -117,7 +122,7 @@ const CourseEditor = () => {
                   type="submit"
                   className="bg-primary-700 hover:bg-primary-600"
                 >
-                  {methods.watch("courseStatus")
+                  {courseStatus
                     ? "Update Published Course"
                     : "Save Draft"}
                 </Button>
@@ -187,8 +192,8 @@ const CourseEditor = () => {
                   }
                   className="border-none text-primary-700 group"
                 >
-                  <Plus className="mr-1 h-4 w-4 text-primary-700 group-hover:white-100" />
-                  <span className="text-primary-700 group-hover:white-100">
+                  <Plus className="mr-1 h-4 w-4 text-primary-700 group-hover:text-white-100" />
+                  <span className="text-primary-700 group-hover:text-white-100">
                     Add Section
                   </span>
                 </Button>

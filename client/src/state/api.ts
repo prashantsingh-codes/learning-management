@@ -12,7 +12,10 @@ const customBaseQuery = async (
   const baseQuery = fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: async (headers) => {
-      const token = await window.Clerk?.session?.getToken();
+      const token =
+        typeof window !== "undefined"
+          ? await window.Clerk?.session?.getToken()
+          : null;
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
@@ -44,7 +47,7 @@ const customBaseQuery = async (
       result.data = result.data.data;
     } else if (
       result.error?.status === 204 ||
-      result.meta?.response?.status === 24
+      result.meta?.response?.status === 204
     ) {
       return { data: null };
     }
@@ -159,7 +162,7 @@ export const api = createApi({
       { amount: number }
     >({
       query: ({ amount }) => ({
-        url: `/transactions/stripe/payment-intent`,
+        url: `transactions/stripe/payment-intent`,
         method: "POST",
         body: { amount },
       }),

@@ -327,7 +327,10 @@ export const uploadAllVideos = async (
   for (let i = 0; i < updatedSections.length; i++) {
     for (let j = 0; j < updatedSections[i].chapters.length; j++) {
       const chapter = updatedSections[i].chapters[j];
-      if (chapter.video instanceof File && chapter.video.type === "video/mp4") {
+      if (
+        chapter.video instanceof File &&
+        chapter.video.type.startsWith("video/")
+      ) {
         try {
           const updatedChapter = await uploadVideo(
             chapter,

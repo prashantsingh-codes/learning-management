@@ -2,7 +2,7 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 export const useCheckoutNavigation = () => {
   const router = useRouter();
@@ -15,7 +15,7 @@ export const useCheckoutNavigation = () => {
   const navigateToStep = useCallback(
     (step: number) => {
       const newStep = Math.min(Math.max(1, step), 3);
-      const showSignUp = isSignedIn ? "true" : "false";
+      const showSignUp = isSignedIn ? "false" : "true";
 
       router.push(
         `/checkout?step=${newStep}&id=${courseId}&showSignUp=${showSignUp}`,

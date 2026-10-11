@@ -13,7 +13,7 @@ const AccordionSections = ({ sections }: AccordionSectionsProps) => {
       {sections.map((section) => (
         <AccordionItem
           key={section.sectionId}
-          value={section.sectionTitle}
+          value={section.sectionId}
           className="accordion-section"
         >
           <AccordionTrigger className="accordion-section__trigger">

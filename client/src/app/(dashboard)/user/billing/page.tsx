@@ -56,6 +56,9 @@ const UserBilling = () => {
               <SelectItem className="billing__select-item" value="stripe">
                 Stripe
               </SelectItem>
+              <SelectItem className="billing__select-item" value="free">
+                Free
+              </SelectItem>
               <SelectItem className="billing__select-item" value="paypal">
                 Paypal
               </SelectItem>

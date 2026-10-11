@@ -7,18 +7,20 @@ const isTeacherRoute = createRouteMatcher(["/teacher/(.*)"]);
 export default clerkMiddleware(async (auth, req) => {
   const { sessionClaims } = await auth();
   const userRole =
-    (sessionClaims?.metadata as { userType: "student" | "teacher" })
-      ?.userType || "student";
+    (sessionClaims?.metadata as any)?.userType ||
+    (sessionClaims?.publicMetadata as any)?.userType ||
+    (sessionClaims?.userType as string) ||
+    undefined;
 
   if (isStudentRoute(req)) {
-    if (userRole !== "student") {
+    if (userRole && userRole !== "student") {
       const url = new URL("/teacher/courses", req.url);
       return NextResponse.redirect(url);
     }
   }
 
   if (isTeacherRoute(req)) {
-    if (userRole !== "teacher") {
+    if (userRole && userRole !== "teacher") {
       const url = new URL("/user/courses", req.url);
       return NextResponse.redirect(url);
     }
