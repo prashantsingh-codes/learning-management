@@ -22,6 +22,7 @@ const PaymentPageContent = () => {
   const { course, courseId } = useCurrentCourse();
   const { user } = useUser();
   const { signOut } = useClerk();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,39 +32,55 @@ const PaymentPageContent = () => {
       return;
     }
 
-    const rawLocalUrl = process.env.NEXT_PUBLIC_LOCAL_URL || "";
-    const localUrl = rawLocalUrl.startsWith("http")
-      ? rawLocalUrl
-      : rawLocalUrl
-      ? `http://${rawLocalUrl}`
-      : "";
-    const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : "";
-    const baseUrl =
-      localUrl ||
-      vercelUrl ||
-      (typeof window !== "undefined" ? window.location.origin : "");
+    setIsSubmitting(true);
 
-    const result = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${baseUrl}/checkout?step=3&id=${courseId}`,
-      },
-      redirect: "if_required",
-    });
+    try {
+      const rawLocalUrl = process.env.NEXT_PUBLIC_LOCAL_URL || "";
+      const localUrl = rawLocalUrl.startsWith("http")
+        ? rawLocalUrl
+        : rawLocalUrl
+        ? `http://${rawLocalUrl}`
+        : "";
+      const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL
+        ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+        : "";
+      const baseUrl =
+        localUrl ||
+        vercelUrl ||
+        (typeof window !== "undefined" ? window.location.origin : "");
 
-    if (result.paymentIntent?.status === "succeeded") {
-      const transactionData: Partial<Transaction> = {
-        transactionId: result.paymentIntent.id,
-        userId: user?.id,
-        courseId: courseId,
-        paymentProvider: "stripe",
-        amount: course?.price || 0,
-      };
+      const result = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${baseUrl}/checkout?step=3&id=${courseId}`,
+        },
+        redirect: "if_required",
+      });
 
-      await createTransaction(transactionData);
-      navigateToStep(3);
+      if (result.error) {
+        toast.error(result.error.message || "An error occurred with your payment");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (result.paymentIntent?.status === "succeeded") {
+        const transactionData: Partial<Transaction> = {
+          transactionId: result.paymentIntent.id,
+          userId: user?.id,
+          courseId: courseId,
+          paymentProvider: "stripe",
+          amount: course?.price || 0,
+        };
+
+        await createTransaction(transactionData).unwrap();
+        toast.success("Payment successful!");
+        navigateToStep(3);
+      }
+    } catch (error: any) {
+      console.error("Payment error:", error);
+      toast.error(error?.message || "Failed to complete transaction");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -104,7 +121,10 @@ const PaymentPageContent = () => {
                     <span>Credit/Debit Card</span>
                   </div>
                   <div className="payment__card-element">
-                    <PaymentElement />
+                    <PaymentElement
+                      id="payment-element"
+                      options={{ layout: "accordion" }}
+                    />
                   </div>
                 </div>
               </div>
@@ -128,9 +148,9 @@ const PaymentPageContent = () => {
           form="payment-form"
           type="submit"
           className="payment__submit"
-          disabled={!stripe || !elements}
+          disabled={!stripe || !elements || isSubmitting}
         >
-          Pay with Credit Card
+          {isSubmitting ? "Processing..." : "Pay with Credit Card"}
         </Button>
       </div>
     </div>

@@ -9,11 +9,13 @@ import { useCreateStripePaymentIntentMutation } from "@/state/api";
 import { useCurrentCourse } from "@/hooks/useCurrentCourse";
 import Loading from "@/components/Loading";
 
-const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY;
+const stripePublicKey =
+  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY ||
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
 
 const appearance: Appearance = {
-  theme: "stripe",
+  theme: "night",
   variables: {
     colorPrimary: "#0570de",
     colorBackground: "#18181b",
@@ -30,24 +32,32 @@ const appearance: Appearance = {
 const StripeProvider = ({ children }: { children: React.ReactNode }) => {
   const [clientSecret, setClientSecret] = useState<string | "">("");
   const [createStripePaymentIntent] = useCreateStripePaymentIntentMutation();
-  const { course } = useCurrentCourse();
+  const { course, courseId } = useCurrentCourse();
 
   useEffect(() => {
-    if (!course || (course.price ?? 0) <= 0) return;
+    if (!course || (course.price ?? 0) <= 0 || clientSecret) return;
+
+    let isMounted = true;
     const fetchPaymentIntent = async () => {
       try {
         const result = await createStripePaymentIntent({
           amount: course.price ?? 0,
         }).unwrap();
 
-        setClientSecret(result.clientSecret);
+        if (isMounted && result?.clientSecret) {
+          setClientSecret(result.clientSecret);
+        }
       } catch (error) {
         console.error("Failed to create payment intent:", error);
       }
     };
 
     fetchPaymentIntent();
-  }, [createStripePaymentIntent, course?.price, course]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [createStripePaymentIntent, course?.price, courseId, clientSecret]);
 
   const options: StripeElementsOptions = {
     clientSecret,

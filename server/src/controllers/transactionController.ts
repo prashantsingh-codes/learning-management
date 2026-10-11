@@ -48,7 +48,7 @@ export const createStripePaymentIntent = async (
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount,
+      amount: Math.round(Number(amount)),
       currency: "usd",
       automatic_payment_methods: {
         enabled: true,
@@ -62,10 +62,11 @@ export const createStripePaymentIntent = async (
         clientSecret: paymentIntent.client_secret,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Error creating stripe payment intent:", error);
     res
       .status(500)
-      .json({ message: "Error creating stripe payment intent", error });
+      .json({ message: error?.message || "Error creating stripe payment intent", error });
   }
 };
 
