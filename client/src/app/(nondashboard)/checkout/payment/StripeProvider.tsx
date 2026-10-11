@@ -9,10 +9,22 @@ import { useCreateStripePaymentIntentMutation } from "@/state/api";
 import { useCurrentCourse } from "@/hooks/useCurrentCourse";
 import Loading from "@/components/Loading";
 
+const cleanKey = (key?: string): string => {
+  if (!key) return "";
+  return key.trim().replace(/^["']|["']$/g, "").trim();
+};
+
+const DEFAULT_STRIPE_PUBLIC_KEY =
+  "pk_test_51TAsNuJ60Lb1e6oVkz1IDQ96CAAM4SLCzOYVKWucl4OEITnXFAVpmtJnqGevJPRsImPgWmyVkAym0MPVjE0a23Ki00ym9bWNoA";
+
+const envKey =
+  cleanKey(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) ||
+  cleanKey(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
 const stripePublicKey =
-  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY ||
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
+  envKey && envKey.startsWith("pk_") ? envKey : DEFAULT_STRIPE_PUBLIC_KEY;
+
+const stripePromise = loadStripe(stripePublicKey);
 
 const appearance: Appearance = {
   theme: "night",
@@ -31,6 +43,7 @@ const appearance: Appearance = {
 
 const StripeProvider = ({ children }: { children: React.ReactNode }) => {
   const [clientSecret, setClientSecret] = useState<string | "">("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [createStripePaymentIntent] = useCreateStripePaymentIntentMutation();
   const { course, courseId } = useCurrentCourse();
 
@@ -40,15 +53,27 @@ const StripeProvider = ({ children }: { children: React.ReactNode }) => {
     let isMounted = true;
     const fetchPaymentIntent = async () => {
       try {
-        const result = await createStripePaymentIntent({
+        const result: any = await createStripePaymentIntent({
           amount: course.price ?? 0,
         }).unwrap();
 
-        if (isMounted && result?.clientSecret) {
-          setClientSecret(result.clientSecret);
+        const secret =
+          result?.clientSecret ||
+          result?.data?.clientSecret ||
+          (typeof result === "string" ? result : "");
+
+        if (isMounted && secret) {
+          setClientSecret(secret);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Failed to create payment intent:", error);
+        if (isMounted) {
+          setErrorMessage(
+            error?.data?.message ||
+              error?.message ||
+              "Failed to initialize payment gateway."
+          );
+        }
       }
     };
 
@@ -68,6 +93,14 @@ const StripeProvider = ({ children }: { children: React.ReactNode }) => {
     return (
       <div className="p-6 text-center text-red-400">
         Stripe configuration is missing. Please check your environment variables.
+      </div>
+    );
+  }
+
+  if (errorMessage && !clientSecret) {
+    return (
+      <div className="p-6 text-center text-red-400">
+        {errorMessage}
       </div>
     );
   }

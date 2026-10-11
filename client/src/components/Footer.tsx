@@ -12,6 +12,7 @@ const Footer = () => {
             href={`/${item.toLowerCase().replace(" ", "-")}`}
             className="footer__link"
             scroll={false}
+            prefetch={false}
           >
             {item}
           </Link>
