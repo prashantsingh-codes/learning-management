@@ -98,7 +98,7 @@ export default function DroppableComponent() {
                                     }`}
                                   >
                                     <div className="droppable-chapter__title">
-                                      <GripVertical className="h-4 w-4 mb-[2px]" />
+                                      <GripVertical className="h-4 w-4 mb-0.5" />
                                       <p className="text-sm">{`${chapterIndex + 1}. ${chapter.title}`}</p>
                                     </div>
                                     <div className="droppable-chapter__actions">
