@@ -303,7 +303,7 @@ export const createCourseFormData = (
     ...section,
     chapters: section.chapters.map((chapter) => ({
       ...chapter,
-      video: chapter.video,
+      video: typeof chapter.video === "string" ? chapter.video : "",
     })),
   }));
 
@@ -344,6 +344,7 @@ export const uploadAllVideos = async (
             `Failed to upload video for chapter ${chapter.chapterId}:`,
             error
           );
+          throw error;
         }
       }
     }

@@ -126,9 +126,10 @@ export const updateCourse = async (
       updateData.sections = sectionsData.map((section: any) => ({
         ...section,
         sectionId: section.sectionId || uuidv4(),
-        chapters: section.chapters.map((chapter: any) => ({
+        chapters: (section.chapters || []).map((chapter: any) => ({
           ...chapter,
           chapterId: chapter.chapterId || uuidv4(),
+          video: typeof chapter.video === "string" ? chapter.video : "",
         })),
       }));
     }
