@@ -130,6 +130,9 @@ The database layer utilizes **Amazon DynamoDB** via Dynamoose to ensure single-d
 
 ```mermaid
 erDiagram
+    COURSE ||--o{ TRANSACTION : generates
+    COURSE ||--o{ USER_COURSE_PROGRESS : tracks
+
     COURSE {
         string courseId PK
         string teacherId FK
@@ -138,11 +141,9 @@ erDiagram
         string description
         string category
         string image
-        number price
+        float price
         string level
         string status
-        array sections
-        array enrollments
         string createdAt
         string updatedAt
     }
@@ -152,21 +153,17 @@ erDiagram
         string userId FK
         string courseId FK
         string paymentProvider
-        number amount
+        float amount
         string dateTime
     }
 
     USER_COURSE_PROGRESS {
         string userId PK
-        string courseId SK
-        number overallProgress
+        string courseId FK
+        float overallProgress
         string enrollmentDate
-        array sections
         string lastAccessedTimestamp
     }
-
-    COURSE ||--o{ TRANSACTION : "generates"
-    COURSE ||--o{ USER_COURSE_PROGRESS : "tracks"
 ```
 
 ---
