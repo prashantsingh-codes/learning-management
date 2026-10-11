@@ -25,6 +25,7 @@ An enterprise-grade, serverless Learning Management System (LMS) built with **Ne
 **LearnSphere** is a high-performance, full-stack video learning and course marketplace platform engineered for massive scalability, low latency, and zero server maintenance.
 
 Engineered with modern full-stack best practices, it addresses real-world challenges including:
+
 - **Direct-to-Cloud Video Ingestion**: Presigned S3 uploads bypassing application servers for gigabyte-scale video files.
 - **Global Low-Latency Streaming**: Accelerated video delivery via Amazon CloudFront edge nodes with fine-grained CORS and byte-range request support.
 - **Microservice-Free Serverless Backend**: Express 5 application packaged with `serverless-http` deployed on AWS Lambda container images via Amazon ECR.
@@ -82,6 +83,7 @@ flowchart TD
 ## 🚀 Key Features
 
 ### 👨‍🎓 Student Experience
+
 - **Course Discovery & Search**: Fast multi-attribute filtering (category, price, difficulty level) with debounced search.
 - **Seamless 3-Step Checkout Wizard**:
   - Step 1: Order verification & guest/account onboarding.
@@ -94,12 +96,14 @@ flowchart TD
 - **Student Dashboard**: Real-time course progress tracking, billing invoice history, and enrolled course library.
 
 ### 👩‍🏫 Instructor & Creator Studio
+
 - **Dynamic Curriculum Builder**: Drag-and-drop course reordering, multi-section organizing, and chapter management.
 - **Direct S3 Video Uploader**: FilePond-integrated direct chunk upload generating AWS S3 Presigned URLs to prevent server memory saturation.
 - **Teacher Analytics & Billing**: Real-time sales calculations, enrollment numbers, revenue charts, and transaction audits.
 - **Course Publishing Lifecycle**: Draft, review, publish, and archive workflows.
 
 ### 🔐 Security & Infrastructure Excellence
+
 - **Role-Based Access Control (RBAC)**: Fine-grained middleware authorization segregating teacher and student endpoints via Clerk.
 - **Zero-Downtime CI/CD Pipeline**: GitHub Actions automatically builds multi-stage Docker images, pushes to Amazon ECR, and triggers zero-downtime AWS Lambda code updates.
 - **Enterprise Storage Policies**: S3 Bucket ownership enforcement, block public access, Origin Access Control (OAC), and CloudFront managed CORS preflight policies.
@@ -108,19 +112,19 @@ flowchart TD
 
 ## 🛠️ Technical Stack
 
-| Domain | Technologies |
-|---|---|
-| **Frontend Framework** | **Next.js 16.2** (App Router, Server & Client Components, Turbopack) |
+| Domain                   | Technologies                                                                |
+| ------------------------ | --------------------------------------------------------------------------- |
+| **Frontend Framework**   | **Next.js 16.2** (App Router, Server & Client Components, Turbopack)        |
 | **UI Library & Styling** | **React 19.2**, **Tailwind CSS**, **Radix UI Primitives**, **Lucide Icons** |
-| **State & API Cache** | **Redux Toolkit 2.x**, **RTK Query** with automatic cache invalidation |
-| **Authentication** | **Clerk** (Social Login, JWT Tokens, User Metadata, Custom Sessions) |
-| **Payment Gateway** | **Stripe** (Elements, PaymentIntents API, Webhooks) |
-| **Backend Runtime** | **Node.js 22**, **Express 5**, **TypeScript**, **serverless-http** |
-| **Serverless Compute** | **AWS Lambda** (Container image runtime via Amazon ECR) |
-| **API Gateway** | **Amazon API Gateway** (REST API with proxy routes) |
-| **Database** | **Amazon DynamoDB** with **Dynamoose ODM** |
-| **Media & CDN** | **Amazon S3** (Presigned URLs) + **Amazon CloudFront** (Global Edge CDN) |
-| **DevOps & Containers** | **Docker** (Multi-stage build), **GitHub Actions** (CI/CD to AWS) |
+| **State & API Cache**    | **Redux Toolkit 2.x**, **RTK Query** with automatic cache invalidation      |
+| **Authentication**       | **Clerk** (Social Login, JWT Tokens, User Metadata, Custom Sessions)        |
+| **Payment Gateway**      | **Stripe** (Elements, PaymentIntents API, Webhooks)                         |
+| **Backend Runtime**      | **Node.js 22**, **Express 5**, **TypeScript**, **serverless-http**          |
+| **Serverless Compute**   | **AWS Lambda** (Container image runtime via Amazon ECR)                     |
+| **API Gateway**          | **Amazon API Gateway** (REST API with proxy routes)                         |
+| **Database**             | **Amazon DynamoDB** with **Dynamoose ODM**                                  |
+| **Media & CDN**          | **Amazon S3** (Presigned URLs) + **Amazon CloudFront** (Global Edge CDN)    |
+| **DevOps & Containers**  | **Docker** (Multi-stage build), **GitHub Actions** (CI/CD to AWS)           |
 
 ---
 
@@ -213,12 +217,14 @@ learning-management/
 ## ⚙️ Quick Start Guide
 
 ### Prerequisites
+
 - **Node.js** >= 18.x
 - **npm** or **pnpm**
 - **AWS CLI** configured with appropriate IAM credentials
 - **Docker** (optional, for local containerized server execution)
 
 ### 1. Clone Repository
+
 ```bash
 git clone https://github.com/prashantsingh-codes/learning-management.git
 cd learning-management
@@ -227,6 +233,7 @@ cd learning-management
 ### 2. Configure Environment Variables
 
 #### Client Configuration (`client/.env.local`):
+
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8001
 NEXT_PUBLIC_LOCAL_URL=http://localhost:3000
@@ -238,6 +245,7 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL=/signup
 ```
 
 #### Server Configuration (`server/.env`):
+
 ```env
 PORT=8001
 NODE_ENV=development
@@ -252,6 +260,7 @@ CLERK_SECRET_KEY=sk_test_...
 ### 3. Run Locally
 
 #### Start the Server:
+
 ```bash
 cd server
 npm install
@@ -260,6 +269,7 @@ npm run dev
 ```
 
 #### Start the Client:
+
 ```bash
 cd ../client
 npm install
@@ -307,7 +317,8 @@ sequenceDiagram
 
 ## 👤 Author
 
-**Prashant Singh**  
+**Prashant Singh**
+
 - **GitHub**: [@prashantsingh-codes](https://github.com/prashantsingh-codes)
 - **LinkedIn**: [Connect on LinkedIn](https://www.linkedin.com/in/prashant-singh-codes/)
 
